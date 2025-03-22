@@ -47,18 +47,76 @@
             box-shadow: 5px 5px 15px rgba(255, 255, 255, 0.3), inset -3px -3px 8px rgba(255, 255, 255, 0.2);
             border-radius: 8px;
         }
-        .weather-icon {
-            font-size: 24px;
-            color: #fff;
-        }
         #picker {
-            width: 120px;
-            height: 60px;
+            width: 100px;
+            height: 50px;
             border: 2px solid #fff;
             box-shadow: 2px 2px 10px rgba(255, 255, 255, 0.5);
         }
         #qrcode {
             margin-top: 20px;
+        }
+        .calculator {
+            margin-top: 20px;
+            width: 320px;
+            background-color: #333;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 5px 5px 15px rgba(255, 255, 255, 0.3);
+        }
+        .calculator input {
+            width: 100%;
+            height: 40px;
+            font-size: 18px;
+            text-align: right;
+            margin-bottom: 15px;
+            padding: 8px;
+            border-radius: 8px;
+            border: 2px solid #fff;
+            background-color: #222;
+            color: #fff;
+            box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.1);
+        }
+        .calculator button {
+            width: 100%;
+            height: 50px;
+            font-size: 20px;
+            margin: 5px;
+            background-color: #444;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.2);
+        }
+        .calculator button:hover {
+            background-color: #555;
+            transform: translateY(-3px);
+            box-shadow: 2px 2px 10px rgba(255, 255, 255, 0.5);
+        }
+        .calculator button:active {
+            transform: translateY(1px);
+            box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.3);
+        }
+        .calculator button:focus {
+            outline: none;
+        }
+        .calculator button.clear {
+            background-color: #e74c3c;
+        }
+        .calculator button.clear:hover {
+            background-color: #c0392b;
+        }
+
+        /* グリッドレイアウト */
+        .calculator-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        .calculator-buttons button {
+            width: 100%;
         }
     </style>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
@@ -67,7 +125,6 @@
     <header>
         <div class="header-left">
             <div id="date">日付・曜日</div>
-            <div id="weather" class="weather-icon">☼</div>
             <div id="clock">00:00:00</div>
         </div>
     </header>
@@ -83,6 +140,35 @@
             <input type="text" id="qrInput" placeholder="QRコードに変換したいテキストを入力">
             <button onclick="generateQRCode()">QRコードを作成</button>
             <div id="qrcode"></div>
+        </div>
+
+        <!-- 計算機セクション -->
+        <div class="section calculator">
+            <h2>計算機</h2>
+            <input type="text" id="calcDisplay" disabled>
+            <div class="calculator-buttons">
+                <button onclick="appendToDisplay('1')">1</button>
+                <button onclick="appendToDisplay('2')">2</button>
+                <button onclick="appendToDisplay('3')">3</button>
+                <button onclick="appendToDisplay('+')">+</button>
+
+                <button onclick="appendToDisplay('4')">4</button>
+                <button onclick="appendToDisplay('5')">5</button>
+                <button onclick="appendToDisplay('6')">6</button>
+                <button onclick="appendToDisplay('-')">-</button>
+
+                <button onclick="appendToDisplay('7')">7</button>
+                <button onclick="appendToDisplay('8')">8</button>
+                <button onclick="appendToDisplay('9')">9</button>
+                <button onclick="appendToDisplay('*')">*</button>
+
+                <button onclick="appendToDisplay('0')">0</button>
+                <button onclick="appendToDisplay('.')">.</button>
+                <button onclick="calculateResult()">=</button>
+                <button onclick="appendToDisplay('/')">/</button>
+
+                <button class="clear" onclick="clearDisplay()">C</button>
+            </div>
         </div>
     </div>
     
@@ -101,14 +187,6 @@
             document.body.style.backgroundColor = color;
         }
         
-        function updateWeather() {
-            const weatherIcon = document.getElementById('weather');
-            const bwConditions = ['☼', '☁', '☂'];
-            const randomIndex = Math.floor(Math.random() * bwConditions.length);
-            weatherIcon.textContent = bwConditions[randomIndex];
-        }
-        setInterval(updateWeather, 5000);
-        
         function generateQRCode() {
             const inputText = document.getElementById('qrInput').value;
             const qrcodeElement = document.getElementById('qrcode');
@@ -117,6 +195,24 @@
                 new QRCode(qrcodeElement, inputText);
             } else {
                 alert("テキストを入力してください");
+            }
+        }
+
+        // 計算機関連の関数
+        function appendToDisplay(value) {
+            document.getElementById('calcDisplay').value += value;
+        }
+
+        function clearDisplay() {
+            document.getElementById('calcDisplay').value = '';
+        }
+
+        function calculateResult() {
+            try {
+                const result = eval(document.getElementById('calcDisplay').value);
+                document.getElementById('calcDisplay').value = result;
+            } catch (e) {
+                document.getElementById('calcDisplay').value = 'エラー';
             }
         }
     </script>
