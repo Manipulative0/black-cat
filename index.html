@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>black cat</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Pixelated MS Sans Serif', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #111;
+            border-bottom: 3px solid #fff;
+            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.5);
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80%;
+            max-width: 1200px;
+            margin-top: 20px;
+        }
+        .section {
+            padding: 20px;
+            background: linear-gradient(145deg, #222, #000);
+            border: 3px solid #fff;
+            margin: 10px;
+            text-align: center;
+            width: 320px;
+            box-shadow: 5px 5px 15px rgba(255, 255, 255, 0.3), inset -3px -3px 8px rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+        .weather-icon {
+            font-size: 24px;
+            color: #fff;
+        }
+        #picker {
+            width: 120px;
+            height: 60px;
+            border: 2px solid #fff;
+            box-shadow: 2px 2px 10px rgba(255, 255, 255, 0.5);
+        }
+        #qrcode {
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <div id="date">日付・曜日</div>
+            <div id="weather" class="weather-icon">☼</div>
+            <div id="clock">00:00:00</div>
+        </div>
+    </header>
+    <div class="main">
+        <div class="section" id="colorPicker">
+            <h2>Color Picker</h2>
+            <input type="color" id="picker" onchange="updateColor()">
+            <p id="colorCode">#ffffff</p>
+        </div>
+
+        <div class="section" id="qrCodeGenerator">
+            <h2>QRコード作成</h2>
+            <input type="text" id="qrInput" placeholder="QRコードに変換したいテキストを入力">
+            <button onclick="generateQRCode()">QRコードを作成</button>
+            <div id="qrcode"></div>
+        </div>
+    </div>
+    
+    <script>
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString();
+            document.getElementById('date').textContent = now.toLocaleDateString('ja-JP', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+        
+        function updateColor() {
+            const color = document.getElementById('picker').value;
+            document.getElementById('colorCode').textContent = color;
+            document.body.style.backgroundColor = color;
+        }
+        
+        function updateWeather() {
+            const weatherIcon = document.getElementById('weather');
+            const bwConditions = ['☼', '☁', '☂'];
+            const randomIndex = Math.floor(Math.random() * bwConditions.length);
+            weatherIcon.textContent = bwConditions[randomIndex];
+        }
+        setInterval(updateWeather, 5000);
+        
+        function generateQRCode() {
+            const inputText = document.getElementById('qrInput').value;
+            const qrcodeElement = document.getElementById('qrcode');
+            qrcodeElement.innerHTML = ""; // QRコードを初期化
+            if (inputText) {
+                new QRCode(qrcodeElement, inputText);
+            } else {
+                alert("テキストを入力してください");
+            }
+        }
+    </script>
+</body>
+</html>
